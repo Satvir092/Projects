@@ -1,0 +1,160 @@
+from shlex import split
+from pathlib import Path
+
+
+# Gets command line
+def get_input():
+
+    current_command = input()
+
+    return current_command
+
+
+# Creates file under specified directory
+def create_file(directory, file):
+
+    try:
+
+        file = file + ".dsu"
+        folder = Path(directory)
+        user_file = folder / file
+
+        if user_file.exists():
+
+            raise FileExistsError
+
+        user_file.touch()
+
+    except FileNotFoundError:
+
+        print("ERROR")
+
+    except FileExistsError:
+
+        print("ERROR")
+
+    else:
+
+        print(str(user_file.absolute()))
+
+    finally:
+
+        main(get_input())
+
+
+# Deletes specified dsu file
+def delete_file(file):
+
+    try:
+
+        if file[-3:] == "dsu":
+            user_file = Path(file)
+            user_file.unlink()
+        else:
+
+            raise AssertionError
+
+    except FileNotFoundError:
+
+        print("ERROR")
+
+    except AssertionError:
+
+        print("ERROR")
+
+    else:
+
+        print(str(user_file.absolute()) + " DELETED")
+
+    finally:
+
+        main(get_input())
+
+
+# Reads specified dsu file
+def read_file(file):
+
+    try:
+
+        if file[-3:] == "dsu":
+
+            user_file = Path(file).open("r")
+
+        else:
+
+            raise AssertionError
+
+    except FileNotFoundError:
+
+        print("ERROR")
+
+    except AssertionError:
+
+        print("ERROR")
+
+    else:
+
+        size = Path(file)
+
+        if size.stat().st_size == 0:
+
+            print("EMPTY")
+
+        else:
+
+            for line in user_file.readlines():
+
+                print(line, end="")
+
+        user_file.close()
+
+    finally:
+
+        main(get_input())
+
+
+# Input Handling
+def main(In):
+
+    try:
+
+        current_string = split(In)
+
+    except ValueError:
+
+        print("ERROR")
+        main(get_input())
+
+    else:
+
+        try:
+
+            if current_string[0] != "Q":
+
+                if current_string[0] == "C" and current_string[2] == "-n":
+
+                    create_file(current_string[1], current_string[3])
+
+                elif current_string[0] == "D":
+
+                    delete_file(current_string[1])
+
+                elif current_string[0] == "R":
+
+                    read_file(current_string[1])
+
+                else:
+
+                    print("ERROR")
+                    main(get_input())
+
+        except IndexError:
+
+            print("ERROR")
+            main(get_input())
+
+
+if __name__ == "__main__":
+
+    main(get_input())
+    
